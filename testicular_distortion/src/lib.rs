@@ -1,7 +1,9 @@
 use nih_plug::prelude::*;
+use nih_plug_iced::IcedState;
 use std::sync::Arc;
 
 mod algorithms;
+mod editor;
 
 struct TesticularDistortion {
     params: Arc<TesticularDistortionParams>,
@@ -9,6 +11,8 @@ struct TesticularDistortion {
 
 #[derive(Params)]
 struct TesticularDistortionParams {
+    #[persist = "editor-state"]
+    editor_state: Arc<IcedState>,
     #[id = "drive"]
     pub drive: FloatParam,
     #[id = "gain"]
@@ -26,6 +30,8 @@ impl Default for TesticularDistortion {
 impl Default for TesticularDistortionParams {
     fn default() -> Self {
         Self {
+            editor_state: editor::default_state(),
+
             drive: FloatParam::new(
                 "Drive",
                 util::db_to_gain(0.0),
@@ -85,6 +91,10 @@ impl Plugin for TesticularDistortion {
 
     fn params(&self) -> Arc<dyn Params> {
         self.params.clone()
+    }
+
+    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
+        editor::create(self.params.clone(), self.params.editor_state.clone())
     }
 
     fn initialize(
