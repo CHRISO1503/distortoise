@@ -1,13 +1,15 @@
-use atomic_float::AtomicF32;
-use nih_plug::prelude::{util, Editor, GuiContext};
+use nih_plug::prelude::{Editor, GuiContext};
 use nih_plug_iced::widgets as nih_widgets;
 use nih_plug_iced::*;
 use std::sync::Arc;
 
+mod graph;
+
+use crate::editor::graph::Graph;
 use crate::TesticularDistortionParams;
 
 pub(crate) fn default_state() -> Arc<IcedState> {
-    IcedState::from_size(200, 150)
+    IcedState::from_size(600, 400)
 }
 
 pub(crate) fn create(
@@ -20,6 +22,7 @@ pub(crate) fn create(
 struct TesticularDistortionEditor {
     params: Arc<TesticularDistortionParams>,
     context: Arc<dyn GuiContext>,
+    graph_state: graph::State,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -37,7 +40,11 @@ impl IcedEditor for TesticularDistortionEditor {
         params: Self::InitializationFlags,
         context: Arc<dyn GuiContext>,
     ) -> (Self, Command<Self::Message>) {
-        let editor = TesticularDistortionEditor { params, context };
+        let editor = TesticularDistortionEditor {
+            params,
+            context,
+            graph_state: Default::default(),
+        };
         (editor, Command::none())
     }
 
@@ -58,15 +65,7 @@ impl IcedEditor for TesticularDistortionEditor {
     }
 
     fn view(&mut self) -> Element<'_, Self::Message> {
-        Column::new().into()
-    }
-
-    fn background_color(&self) -> nih_plug_iced::Color {
-        nih_plug_iced::Color {
-            r: 0.98,
-            g: 0.98,
-            b: 0.98,
-            a: 1.0,
-        }
+        //TODO: map graph to message once graph_state is non-empty
+        Column::new().push(Graph::new(&mut self.graph_state)).into()
     }
 }
