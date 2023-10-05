@@ -1,71 +1,44 @@
-use nih_plug::prelude::{Editor, GuiContext};
-use nih_plug_iced::widgets as nih_widgets;
-use nih_plug_iced::*;
+use nih_plug::prelude::Editor;
+use nih_plug_vizia::vizia::prelude::*;
+use nih_plug_vizia::vizia::vg::{Canvas, Path};
+use nih_plug_vizia::widgets::*;
+use nih_plug_vizia::{create_vizia_editor, ViziaState, ViziaTheming};
 use std::sync::Arc;
 
 mod graph;
 
-use crate::editor::graph::Graph;
 use crate::TesticularDistortionParams;
 
-pub(crate) fn default_state() -> Arc<IcedState> {
-    IcedState::from_size(600, 400)
+use self::graph::DistortionGraph;
+
+#[derive(Lens)]
+struct Data {
+    params: Arc<TesticularDistortionParams>,
+}
+
+impl Model for Data {}
+
+pub(crate) fn default_state() -> Arc<ViziaState> {
+    ViziaState::new(|| (800, 500))
 }
 
 pub(crate) fn create(
     params: Arc<TesticularDistortionParams>,
-    editor_state: Arc<IcedState>,
+    editor_state: Arc<ViziaState>,
 ) -> Option<Box<dyn Editor>> {
-    create_iced_editor::<TesticularDistortionEditor>(editor_state, params)
-}
-
-struct TesticularDistortionEditor {
-    params: Arc<TesticularDistortionParams>,
-    context: Arc<dyn GuiContext>,
-    graph_state: graph::State,
-}
-
-#[derive(Debug, Clone, Copy)]
-enum Message {
-    /// Update a parameter's value.
-    ParamUpdate(nih_widgets::ParamMessage),
-}
-
-impl IcedEditor for TesticularDistortionEditor {
-    type Executor = executor::Default;
-    type Message = Message;
-    type InitializationFlags = Arc<TesticularDistortionParams>;
-
-    fn new(
-        params: Self::InitializationFlags,
-        context: Arc<dyn GuiContext>,
-    ) -> (Self, Command<Self::Message>) {
-        let editor = TesticularDistortionEditor {
-            params,
-            context,
-            graph_state: Default::default(),
-        };
-        (editor, Command::none())
-    }
-
-    fn context(&self) -> &dyn GuiContext {
-        self.context.as_ref()
-    }
-
-    fn update(
-        &mut self,
-        _window: &mut WindowQueue,
-        message: Self::Message,
-    ) -> Command<Self::Message> {
-        match message {
-            Message::ParamUpdate(message) => self.handle_param_message(message),
+    create_vizia_editor(editor_state, ViziaTheming::Custom, move |cx, _| {
+        Data {
+            params: params.clone(),
         }
+        .build(cx);
 
-        Command::none()
-    }
-
-    fn view(&mut self) -> Element<'_, Self::Message> {
-        //TODO: map graph to message once graph_state is non-empty
-        Column::new().push(Graph::new(&mut self.graph_state)).into()
-    }
+        VStack::new(cx, |cx| {
+            Label::new(cx, "Testicular Distortion");
+            HStack::new(cx, |cx| {
+                ParamSlider::new(cx, Data::params, |p| &p.drive);
+                let mut path = Path::new();
+                DistortionGraph::new(cx);
+            });
+        });
+    })
 }

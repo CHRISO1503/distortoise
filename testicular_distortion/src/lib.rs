@@ -1,5 +1,5 @@
 use nih_plug::prelude::*;
-use nih_plug_iced::IcedState;
+use nih_plug_vizia::ViziaState;
 use std::sync::Arc;
 
 mod algorithms;
@@ -12,7 +12,7 @@ struct TesticularDistortion {
 #[derive(Params)]
 struct TesticularDistortionParams {
     #[persist = "editor-state"]
-    editor_state: Arc<IcedState>,
+    editor_state: Arc<ViziaState>,
     #[id = "drive"]
     pub drive: FloatParam,
     #[id = "gain"]
