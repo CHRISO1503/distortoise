@@ -1,6 +1,5 @@
 use nih_plug::prelude::Editor;
 use nih_plug_vizia::vizia::prelude::*;
-use nih_plug_vizia::vizia::vg::{Canvas, Path};
 use nih_plug_vizia::widgets::*;
 use nih_plug_vizia::{create_vizia_editor, ViziaState, ViziaTheming};
 use std::sync::Arc;
@@ -36,8 +35,9 @@ pub(crate) fn create(
             Label::new(cx, "Testicular Distortion");
             HStack::new(cx, |cx| {
                 ParamSlider::new(cx, Data::params, |p| &p.drive);
-                let mut path = Path::new();
-                DistortionGraph::new(cx);
+                DistortionGraph::new(cx, Data::params, |p| &p.algorithm, params.algorithm.value())
+                    .width(Percentage(50.0))
+                    .height(Percentage(50.0));
             });
         });
     })

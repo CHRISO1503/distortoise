@@ -5,6 +5,8 @@ use std::sync::Arc;
 mod algorithms;
 mod editor;
 
+use algorithms::DistortionAlgorithm;
+
 struct TesticularDistortion {
     params: Arc<TesticularDistortionParams>,
 }
@@ -13,6 +15,8 @@ struct TesticularDistortion {
 struct TesticularDistortionParams {
     #[persist = "editor-state"]
     editor_state: Arc<ViziaState>,
+    #[id = "algorithm"]
+    pub algorithm: EnumParam<DistortionAlgorithm>,
     #[id = "drive"]
     pub drive: FloatParam,
     #[id = "gain"]
@@ -31,6 +35,8 @@ impl Default for TesticularDistortionParams {
     fn default() -> Self {
         Self {
             editor_state: editor::default_state(),
+
+            algorithm: EnumParam::new("Algorithm", DistortionAlgorithm::SoftClip),
 
             drive: FloatParam::new(
                 "Drive",
