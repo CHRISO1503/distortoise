@@ -1,14 +1,17 @@
+use data::UIData;
 use nih_plug::prelude::*;
 use nih_plug_vizia::ViziaState;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 mod algorithms;
+mod data;
 mod editor;
 
 use algorithms::DistortionAlgorithm;
 
 struct TesticularDistortion {
     params: Arc<TesticularDistortionParams>,
+    ui_data: Arc<Mutex<UIData>>,
 }
 
 #[derive(Params)]
@@ -27,6 +30,7 @@ impl Default for TesticularDistortion {
     fn default() -> Self {
         Self {
             params: Arc::new(TesticularDistortionParams::default()),
+            ui_data: Arc::new(Mutex::new(UIData::default())),
         }
     }
 }
@@ -100,7 +104,11 @@ impl Plugin for TesticularDistortion {
     }
 
     fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
-        editor::create(self.params.clone(), self.params.editor_state.clone())
+        editor::create(
+            self.params.clone(),
+            self.ui_data.clone(),
+            self.params.editor_state.clone(),
+        )
     }
 
     fn initialize(
@@ -130,8 +138,19 @@ impl Plugin for TesticularDistortion {
                 *sample *= gain;
             }
         }
+        if self.params.editor_state.is_open() {
+            self.update_ui_data();
+        }
 
         ProcessStatus::Normal
+    }
+}
+
+impl TesticularDistortion {
+    fn update_ui_data(&mut self) {
+        let ui_data = self.ui_data.lock().unwrap();
+        ui_data.set_drive(self.params.drive.smoothed.next());
+        ui_data.set_algorithm(self.params.algorithm.value());
     }
 }
 

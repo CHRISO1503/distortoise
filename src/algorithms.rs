@@ -15,6 +15,18 @@ impl DistortionAlgorithm {
     }
 }
 
+impl From<usize> for DistortionAlgorithm {
+    fn from(id: usize) -> DistortionAlgorithm {
+        Self::from_index(id)
+    }
+}
+
+impl From<DistortionAlgorithm> for usize {
+    fn from(t: DistortionAlgorithm) -> usize {
+        t as usize
+    }
+}
+
 pub fn soft_clip(mut x: f32) -> f32 {
     x = hard_clip(x);
     1.5 * (x - 1.0 / 3.0 * x.powf(3.0))
