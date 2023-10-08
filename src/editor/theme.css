@@ -1,0 +1,26 @@
+.main {
+    background-color: #222222;
+}
+
+.param_knob {
+    width: 150px;
+}
+
+label {
+    child-space: 1s;
+    font-size: 7;
+    color: #c2c2c2;
+}
+
+knob {
+    width: 70px;
+    height: 70px;
+}
+
+knob .track {
+    background-color: #e77c7c;
+}
+
+.tick {
+    background-color: #696969;
+}
