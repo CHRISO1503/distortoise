@@ -9,7 +9,7 @@ mod graph;
 use crate::data::UIData;
 use crate::TesticularDistortionParams;
 
-use self::graph::DistortionGraph;
+use self::graph::{DistortionGraph, GraphBackground};
 
 #[derive(Lens)]
 struct Data {
@@ -39,9 +39,12 @@ pub(crate) fn create(
             Label::new(cx, "Testicular Distortion");
             HStack::new(cx, |cx| {
                 ParamSlider::new(cx, Data::params, |p| &p.drive);
-                DistortionGraph::new(cx, Data::ui_data)
-                    .width(Percentage(50.0))
-                    .height(Percentage(50.0));
+                ZStack::new(cx, |cx| {
+                    GraphBackground::new(cx);
+                    DistortionGraph::new(cx, Data::ui_data);
+                })
+                .width(Pixels(300.0))
+                .height(Pixels(300.0));
             });
         });
     })
