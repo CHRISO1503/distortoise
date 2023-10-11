@@ -1,5 +1,5 @@
 use data::UIData;
-use nih_plug::prelude::*;
+use nih_plug::{debug, prelude::*};
 use nih_plug_vizia::ViziaState;
 use std::sync::{Arc, Mutex};
 
@@ -9,9 +9,14 @@ mod editor;
 
 use algorithms::DistortionAlgorithm;
 
+const PEAK_METER_DECAY_MS: f64 = 150.0;
+
 struct TesticularDistortion {
     params: Arc<TesticularDistortionParams>,
     ui_data: Arc<Mutex<UIData>>,
+    peak_meter_decay_weight: f32,
+    pre_peak_meter: Arc<AtomicF32>,
+    peak_meter: Arc<AtomicF32>,
 }
 
 #[derive(Params)]
@@ -31,6 +36,9 @@ impl Default for TesticularDistortion {
         Self {
             params: Arc::new(TesticularDistortionParams::default()),
             ui_data: Arc::new(Mutex::new(UIData::default())),
+            peak_meter_decay_weight: 1.0,
+            peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
+            pre_peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
         }
     }
 }
@@ -51,8 +59,7 @@ impl Default for TesticularDistortionParams {
                 },
             )
             .with_smoother(SmoothingStyle::Linear(50.0))
-            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
 
             gain: FloatParam::new(
                 "Gain",
@@ -105,6 +112,8 @@ impl Plugin for TesticularDistortion {
         editor::create(
             self.params.clone(),
             self.ui_data.clone(),
+            self.pre_peak_meter.clone(),
+            self.peak_meter.clone(),
             self.params.editor_state.clone(),
         )
     }
@@ -112,9 +121,12 @@ impl Plugin for TesticularDistortion {
     fn initialize(
         &mut self,
         _audio_io_layout: &AudioIOLayout,
-        _buffer_config: &BufferConfig,
+        buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
+        self.peak_meter_decay_weight = 0.25f64
+            .powf((buffer_config.sample_rate as f64 * PEAK_METER_DECAY_MS / 1000.0).recip())
+            as f32;
         true
     }
 
@@ -129,17 +141,48 @@ impl Plugin for TesticularDistortion {
         for channel_samples in buffer.iter_samples() {
             let gain = self.params.gain.smoothed.next();
             let drive = self.params.drive.smoothed.next();
+            let mut pre_amplitude = 0.0;
+            let mut amplitude = 0.0;
+            let num_samples = channel_samples.len();
 
             for sample in channel_samples {
+                pre_amplitude += *sample;
                 *sample *= drive;
                 *sample = algorithms::soft_clip(*sample);
                 *sample *= gain;
+                amplitude += *sample;
+            }
+
+            // Handle peak meter values
+            if self.params.editor_state.is_open() {
+                pre_amplitude = (pre_amplitude / num_samples as f32).abs();
+                amplitude = (amplitude / num_samples as f32).abs();
+                let current_pre_peak_meter = self
+                    .pre_peak_meter
+                    .load(std::sync::atomic::Ordering::Relaxed);
+                let current_peak_meter = self.peak_meter.load(std::sync::atomic::Ordering::Relaxed);
+                let new_pre_peak_meter = if pre_amplitude > current_pre_peak_meter {
+                    pre_amplitude
+                } else {
+                    current_pre_peak_meter * self.peak_meter_decay_weight
+                        + pre_amplitude * (1.0 - self.peak_meter_decay_weight)
+                };
+                let new_peak_meter = if amplitude > current_peak_meter {
+                    amplitude
+                } else {
+                    current_peak_meter * self.peak_meter_decay_weight
+                        + amplitude * (1.0 - self.peak_meter_decay_weight)
+                };
+
+                self.pre_peak_meter
+                    .store(new_pre_peak_meter, std::sync::atomic::Ordering::Relaxed);
+                self.peak_meter
+                    .store(new_peak_meter, std::sync::atomic::Ordering::Relaxed)
             }
         }
         if self.params.editor_state.is_open() {
             self.update_ui_data();
         }
-
         ProcessStatus::Normal
     }
 }
