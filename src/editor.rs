@@ -84,11 +84,14 @@ pub(crate) fn create(
                         .class("peak-meter");
                         PeakMeterOutline::new(cx).class("peak-meter");
                     });
-                });
+                })
+                .left(Pixels(1.0))
+                .right(Pixels(1.0))
+                .child_space(Pixels(0.0));
 
                 HStack::new(cx, |cx| {
                     ParamKnob::new(cx, Data::params, |p| &p.noise, false, false);
-                    ParamKnob::new(cx, Data::params, |p| &p.drive, false, false).id("drive-knob");
+                    ParamKnob::new(cx, Data::params, |p| &p.drive, false, false).class("drive");
                     ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
                 });
             });

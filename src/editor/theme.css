@@ -2,8 +2,8 @@
     background-color: #222222;
 }
 
-.param_knob {
-    width: 90px;
+.param-knob {
+    width: 100%;
     space: 0px;
 }
 
@@ -16,6 +16,12 @@ label {
 knob {
     width: 70px;
     height: 70px;
+    space: 0px;
+}
+
+.drive knob {
+    width: 120px;
+    height: 120px;
     space: 0px;
 }
 
@@ -33,6 +39,6 @@ knob .track {
 }
 
 .peak-meter {
-    width: 25px;
+    width: 21px;
     height: 300px;
 }

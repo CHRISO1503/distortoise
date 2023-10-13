@@ -1,4 +1,3 @@
-use nih_plug::nih_dbg;
 use nih_plug::prelude::util;
 use nih_plug_vizia::vizia::prelude::*;
 use nih_plug_vizia::vizia::vg;
@@ -60,10 +59,6 @@ where
             }
             None => util::MINUS_INFINITY_DB,
         };
-
-        if level_dbfs > -50.0 {
-            nih_dbg!("{:?}", level_dbfs);
-        }
 
         let bounds = cx.bounds();
         let level_height = bounds.h * level_dbfs / 100.0 + bounds.h;

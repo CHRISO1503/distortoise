@@ -101,7 +101,7 @@ impl ParamKnob {
                     .space(Stretch(1.0))
                     .top(Stretch(0.));
                 })
-                .class("param_knob");
+                .class("param-knob");
             }),
         )
     }
