@@ -1,13 +1,13 @@
 use data::UIData;
-use nih_plug::{debug, prelude::*};
-use nih_plug_vizia::ViziaState;
+use nih_plug::prelude::*;
 use std::sync::{Arc, Mutex};
 
 mod algorithms;
 mod data;
 mod editor;
+mod params;
 
-use algorithms::DistortionAlgorithm;
+use params::TesticularDistortionParams;
 
 const PEAK_METER_DECAY_MS: f64 = 150.0;
 
@@ -19,18 +19,6 @@ struct TesticularDistortion {
     peak_meter: Arc<AtomicF32>,
 }
 
-#[derive(Params)]
-struct TesticularDistortionParams {
-    #[persist = "editor-state"]
-    editor_state: Arc<ViziaState>,
-    #[id = "algorithm"]
-    pub algorithm: EnumParam<DistortionAlgorithm>,
-    #[id = "drive"]
-    pub drive: FloatParam,
-    #[id = "gain"]
-    pub gain: FloatParam,
-}
-
 impl Default for TesticularDistortion {
     fn default() -> Self {
         Self {
@@ -39,41 +27,6 @@ impl Default for TesticularDistortion {
             peak_meter_decay_weight: 1.0,
             peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
             pre_peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
-        }
-    }
-}
-
-impl Default for TesticularDistortionParams {
-    fn default() -> Self {
-        Self {
-            editor_state: editor::default_state(),
-
-            algorithm: EnumParam::new("Algorithm", DistortionAlgorithm::SoftClip),
-
-            drive: FloatParam::new(
-                "Drive",
-                1.0,
-                FloatRange::Linear {
-                    min: 1.0,
-                    max: 10.0,
-                },
-            )
-            .with_smoother(SmoothingStyle::Linear(50.0))
-            .with_value_to_string(formatters::v2s_f32_rounded(2)),
-
-            gain: FloatParam::new(
-                "Gain",
-                util::db_to_gain(0.0),
-                FloatRange::Skewed {
-                    min: util::db_to_gain(-30.0),
-                    max: util::db_to_gain(30.0),
-                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
-                },
-            )
-            .with_smoother(SmoothingStyle::Logarithmic(50.0))
-            .with_unit(" dB")
-            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
         }
     }
 }
