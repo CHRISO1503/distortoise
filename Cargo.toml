@@ -20,6 +20,7 @@ nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", features = [
 ] }
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 paste = "1.0.14"
+rand = "0.8.4"
 
 [profile.release]
 lto = "thin"

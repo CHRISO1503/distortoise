@@ -14,6 +14,8 @@ pub struct TesticularDistortionParams {
     pub drive: FloatParam,
     #[id = "gain"]
     pub gain: FloatParam,
+    #[id = "noise"]
+    pub noise: FloatParam,
 }
 
 impl Default for TesticularDistortionParams {
@@ -47,6 +49,9 @@ impl Default for TesticularDistortionParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+
+            noise: FloatParam::new("Noise", 0.0, FloatRange::Linear { min: 0.0, max: 1.0 })
+                .with_smoother(SmoothingStyle::Linear(50.0)),
         }
     }
 }

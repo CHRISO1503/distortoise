@@ -3,7 +3,8 @@
 }
 
 .param_knob {
-    width: 150px;
+    width: 90px;
+    space: 0px;
 }
 
 label {
@@ -15,6 +16,7 @@ label {
 knob {
     width: 70px;
     height: 70px;
+    space: 0px;
 }
 
 knob .track {

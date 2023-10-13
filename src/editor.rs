@@ -87,7 +87,8 @@ pub(crate) fn create(
                 });
 
                 HStack::new(cx, |cx| {
-                    ParamKnob::new(cx, Data::params, |p| &p.drive, false, false);
+                    ParamKnob::new(cx, Data::params, |p| &p.noise, false, false);
+                    ParamKnob::new(cx, Data::params, |p| &p.drive, false, false).id("drive-knob");
                     ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
                 });
             });

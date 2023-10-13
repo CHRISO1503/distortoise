@@ -1,5 +1,6 @@
 use data::UIData;
 use nih_plug::prelude::*;
+use rand::{rngs::StdRng, Rng, SeedableRng};
 use std::sync::{Arc, Mutex};
 
 mod algorithms;
@@ -10,6 +11,7 @@ mod params;
 use params::TesticularDistortionParams;
 
 const PEAK_METER_DECAY_MS: f64 = 150.0;
+const MAX_NOISE_VOLUME: f32 = 0.05;
 
 struct TesticularDistortion {
     params: Arc<TesticularDistortionParams>,
@@ -17,6 +19,7 @@ struct TesticularDistortion {
     peak_meter_decay_weight: f32,
     pre_peak_meter: Arc<AtomicF32>,
     peak_meter: Arc<AtomicF32>,
+    rng: StdRng,
 }
 
 impl Default for TesticularDistortion {
@@ -27,6 +30,7 @@ impl Default for TesticularDistortion {
             peak_meter_decay_weight: 1.0,
             peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
             pre_peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
+            rng: StdRng::seed_from_u64(0),
         }
     }
 }
@@ -94,14 +98,17 @@ impl Plugin for TesticularDistortion {
         for channel_samples in buffer.iter_samples() {
             let gain = self.params.gain.smoothed.next();
             let drive = self.params.drive.smoothed.next();
+            let noise = self.params.noise.smoothed.next();
+            let algorithm = self.params.algorithm.value();
             let mut pre_amplitude = 0.0;
             let mut amplitude = 0.0;
             let num_samples = channel_samples.len();
 
             for sample in channel_samples {
                 pre_amplitude += *sample;
+                *sample *= 1.0 + self.rng.gen::<f32>() * MAX_NOISE_VOLUME * noise;
                 *sample *= drive;
-                *sample = algorithms::soft_clip(*sample);
+                *sample = algorithm.calculate(*sample);
                 *sample *= gain;
                 amplitude += *sample;
             }
