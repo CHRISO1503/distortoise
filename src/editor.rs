@@ -8,6 +8,7 @@ use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+mod enum_button;
 mod graph;
 mod param_knob;
 mod peak_meter;
@@ -15,6 +16,7 @@ mod peak_meter;
 use crate::data::UIData;
 use crate::TesticularDistortionParams;
 
+use self::enum_button::EnumButton;
 use self::graph::{DistortionGraph, GraphBackground, QuadrantBorders};
 use self::param_knob::ParamKnob;
 use self::peak_meter::{PeakMeter, PeakMeterOutline};
@@ -95,6 +97,22 @@ pub(crate) fn create(
                     ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
                 });
             });
+            EnumButton::new(
+                cx,
+                Data::params,
+                |p| &p.algorithm,
+                "Softclip".to_string(),
+                0,
+                2,
+            );
+            EnumButton::new(
+                cx,
+                Data::params,
+                |p| &p.algorithm,
+                "Hardclip".to_string(),
+                1,
+                2,
+            );
         })
         .class("main");
     })
