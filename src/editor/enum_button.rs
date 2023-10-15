@@ -6,7 +6,7 @@ use nih_plug_vizia::widgets::param_base::ParamWidgetBase;
 pub struct EnumButton {
     param_base: ParamWidgetBase,
     option_id: i32,
-    num_options: i32,
+    num_ids: i32,
 }
 
 impl EnumButton {
@@ -16,7 +16,7 @@ impl EnumButton {
         params_to_param: FMap,
         option_name: String,
         option_id: i32,
-        num_options: i32,
+        num_ids: i32,
     ) -> Handle<Self>
     where
         L: Lens<Target = Params> + Clone,
@@ -27,7 +27,7 @@ impl EnumButton {
         Self {
             param_base: ParamWidgetBase::new(cx, params.clone(), params_to_param),
             option_id,
-            num_options,
+            num_ids,
         }
         .build(
             cx,
@@ -45,7 +45,7 @@ impl EnumButton {
     fn set_value(&self, cx: &mut EventContext) {
         self.param_base.begin_set_parameter(cx);
         self.param_base
-            .set_normalized_value(cx, self.option_id as f32 / self.num_options as f32);
+            .set_normalized_value(cx, self.option_id as f32 / self.num_ids as f32);
         self.param_base.end_set_parameter(cx);
     }
 }

@@ -97,22 +97,40 @@ pub(crate) fn create(
                     ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
                 });
             });
-            EnumButton::new(
-                cx,
-                Data::params,
-                |p| &p.algorithm,
-                "Softclip".to_string(),
-                0,
-                2,
-            );
-            EnumButton::new(
-                cx,
-                Data::params,
-                |p| &p.algorithm,
-                "Hardclip".to_string(),
-                1,
-                2,
-            );
+            VStack::new(cx, |cx| {
+                EnumButton::new(
+                    cx,
+                    Data::params,
+                    |p| &p.algorithm,
+                    "Softclip".to_string(),
+                    0,
+                    3,
+                );
+                EnumButton::new(
+                    cx,
+                    Data::params,
+                    |p| &p.algorithm,
+                    "Hardclip".to_string(),
+                    1,
+                    3,
+                );
+                EnumButton::new(
+                    cx,
+                    Data::params,
+                    |p| &p.algorithm,
+                    "Radial".to_string(),
+                    2,
+                    3,
+                );
+                EnumButton::new(
+                    cx,
+                    Data::params,
+                    |p| &p.algorithm,
+                    "Chomper".to_string(),
+                    3,
+                    3,
+                );
+            });
         })
         .class("main");
     })
