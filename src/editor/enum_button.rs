@@ -1,4 +1,4 @@
-use nih_plug::prelude::Param;
+use nih_plug::prelude::{Param, Smoothable};
 use nih_plug_vizia::vizia::prelude::*;
 use nih_plug_vizia::widgets::param_base::ParamWidgetBase;
 
@@ -38,7 +38,10 @@ impl EnumButton {
         .checked(ParamWidgetBase::make_lens(
             params,
             params_to_param,
-            |param| param.modulated_normalized_value() >= 0.5,
+            move |param| {
+                (param.modulated_normalized_value() * num_ids.to_f32() - option_id.to_f32()).abs()
+                    < 0.5
+            },
         ))
     }
 

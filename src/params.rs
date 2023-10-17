@@ -1,4 +1,4 @@
-use nih_plug::prelude::*;
+use nih_plug::{prelude::*, util::MINUS_INFINITY_DB};
 use nih_plug_vizia::ViziaState;
 use std::sync::Arc;
 
@@ -40,9 +40,9 @@ impl Default for TesticularDistortionParams {
                 "Gain",
                 util::db_to_gain(0.0),
                 FloatRange::Skewed {
-                    min: util::db_to_gain(-30.0),
-                    max: util::db_to_gain(30.0),
-                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
+                    min: util::db_to_gain(MINUS_INFINITY_DB),
+                    max: util::db_to_gain(0.0),
+                    factor: FloatRange::gain_skew_factor(MINUS_INFINITY_DB, 0.0),
                 },
             )
             .with_smoother(SmoothingStyle::Logarithmic(50.0))

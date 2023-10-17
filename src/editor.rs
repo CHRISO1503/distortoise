@@ -32,7 +32,7 @@ struct Data {
 impl Model for Data {}
 
 pub(crate) fn default_state() -> Arc<ViziaState> {
-    ViziaState::new(|| (350, 600))
+    ViziaState::new(|| (350, 550))
 }
 
 pub(crate) fn create(
@@ -68,13 +68,16 @@ pub(crate) fn create(
                         )
                         .class("peak-meter");
                         PeakMeterOutline::new(cx).class("peak-meter");
-                    });
+                    })
+                    .left(Pixels(1.0));
                     ZStack::new(cx, |cx| {
                         GraphBackground::new(cx);
                         DistortionGraph::new(cx, Data::ui_data);
                         QuadrantBorders::new(cx);
                     })
-                    .class("graph");
+                    .class("graph")
+                    .left(Pixels(28.0))
+                    .right(Pixels(28.0));
                     ZStack::new(cx, |cx| {
                         PeakMeter::new(
                             cx,
@@ -89,7 +92,7 @@ pub(crate) fn create(
                 })
                 .left(Pixels(1.0))
                 .right(Pixels(1.0))
-                .child_space(Pixels(0.0));
+                .bottom(Pixels(10.0));
 
                 HStack::new(cx, |cx| {
                     ParamKnob::new(cx, Data::params, |p| &p.noise, false, false);
@@ -97,6 +100,7 @@ pub(crate) fn create(
                     ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
                 });
             });
+			// TODO: Change this to two hstacked vstacks when more algorithms added
             VStack::new(cx, |cx| {
                 EnumButton::new(
                     cx,

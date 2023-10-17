@@ -9,19 +9,19 @@
 
 label {
     child-space: 1s;
-    font-size: 20;
+    font-size: 15;
     color: #c2c2c2;
 }
 
 knob {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     space: 0px;
 }
 
 .drive knob {
-    width: 120px;
-    height: 120px;
+    width: 70px;
+    height: 70px;
     space: 0px;
 }
 
@@ -34,11 +34,23 @@ knob .track {
 }
 
 .graph {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
 }
 
 .peak-meter {
-    width: 21px;
+    width: 20px;
     height: 300px;
+}
+
+enum-button > label {
+    font-size: 20;
+}
+
+enum-button:checked {
+    background-color: #e77c7c;
+}
+
+enum-button:checked > label {
+    color: #222222;
 }
