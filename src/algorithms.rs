@@ -51,6 +51,7 @@ pub fn radial(mut x: f32) -> f32 {
     x / x.abs() * (1.0 - (x - x / x.abs()).powf(2.0)).powf(0.5)
 }
 
+#[inline]
 pub fn chomper(x: f32) -> f32 {
     hard_clip(1.5 * x - 0.7 * x.powf(3.0))
 }

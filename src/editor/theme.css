@@ -1,5 +1,15 @@
 .main {
-    background-color: #222222;
+    background-color: #ffc482;
+}
+
+.body {
+    space: 20px;
+}
+
+.title {
+    font-size: 30;
+    bottom: 10px;
+    left: 250px;
 }
 
 .param-knob {
@@ -7,10 +17,14 @@
     space: 0px;
 }
 
+.track {
+    background-color: #2b3a67;
+    foreground-color: #2b3a67;
+}
+
 label {
-    child-space: 1s;
     font-size: 15;
-    color: #c2c2c2;
+    color: #2b3a67;
 }
 
 knob {
@@ -26,16 +40,18 @@ knob {
 }
 
 knob .track {
-    background-color: #e77c7c;
+    background-color: #66999b;
 }
 
 .tick {
-    background-color: #696969;
+    background-color: #b3af8f;
 }
 
 .graph {
     width: 250px;
     height: 250px;
+    left: 28px;
+    right: 28px;
 }
 
 .peak-meter {
@@ -43,14 +59,10 @@ knob .track {
     height: 300px;
 }
 
-enum-button > label {
-    font-size: 20;
-}
-
 enum-button:checked {
-    background-color: #e77c7c;
+    background-color: #66999b;
 }
 
 enum-button:checked > label {
-    color: #222222;
+    color: black;
 }

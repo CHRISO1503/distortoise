@@ -32,7 +32,7 @@ struct Data {
 impl Model for Data {}
 
 pub(crate) fn default_state() -> Arc<ViziaState> {
-    ViziaState::new(|| (350, 550))
+    ViziaState::new(|| (800, 450))
 }
 
 pub(crate) fn create(
@@ -54,86 +54,101 @@ pub(crate) fn create(
 
         ResizeHandle::new(cx);
 
-        VStack::new(cx, |cx| {
-            Label::new(cx, "Testicular Distortion");
+        ZStack::new(cx, |cx| {
             VStack::new(cx, |cx| {
+                Label::new(cx, "Testicular Distortion").class("title");
                 HStack::new(cx, |cx| {
-                    ZStack::new(cx, |cx| {
-                        PeakMeter::new(
-                            cx,
-                            Data::pre_peak_meter.map(|peak_meter| {
-                                util::gain_to_db(peak_meter.load(Ordering::Relaxed))
-                            }),
-                            Some(Duration::from_millis(400)),
-                        )
-                        .class("peak-meter");
-                        PeakMeterOutline::new(cx).class("peak-meter");
-                    })
-                    .left(Pixels(1.0));
-                    ZStack::new(cx, |cx| {
-                        GraphBackground::new(cx);
-                        DistortionGraph::new(cx, Data::ui_data);
-                        QuadrantBorders::new(cx);
-                    })
-                    .class("graph")
-                    .left(Pixels(28.0))
-                    .right(Pixels(28.0));
-                    ZStack::new(cx, |cx| {
-                        PeakMeter::new(
-                            cx,
-                            Data::peak_meter.map(|peak_meter| {
-                                util::gain_to_db(peak_meter.load(Ordering::Relaxed))
-                            }),
-                            Some(Duration::from_millis(400)),
-                        )
-                        .class("peak-meter");
-                        PeakMeterOutline::new(cx).class("peak-meter");
+                    VStack::new(cx, |cx| {
+                        HStack::new(cx, |cx| {
+                            ZStack::new(cx, |cx| {
+                                PeakMeter::new(
+                                    cx,
+                                    Data::pre_peak_meter.map(|peak_meter| {
+                                        util::gain_to_db(peak_meter.load(Ordering::Relaxed))
+                                    }),
+                                    Some(Duration::from_millis(400)),
+                                )
+                                .class("peak-meter");
+                                PeakMeterOutline::new(cx).class("peak-meter");
+                            })
+                            .left(Pixels(1.0));
+                            ZStack::new(cx, |cx| {
+                                GraphBackground::new(cx);
+                                DistortionGraph::new(cx, Data::ui_data);
+                                QuadrantBorders::new(cx);
+                            })
+                            .class("graph");
+                            ZStack::new(cx, |cx| {
+                                PeakMeter::new(
+                                    cx,
+                                    Data::peak_meter.map(|peak_meter| {
+                                        util::gain_to_db(peak_meter.load(Ordering::Relaxed))
+                                    }),
+                                    Some(Duration::from_millis(400)),
+                                )
+                                .class("peak-meter");
+                                PeakMeterOutline::new(cx).class("peak-meter");
+                            });
+                        })
+                        .bottom(Pixels(10.0));
+
+                        HStack::new(cx, |cx| {
+                            ParamKnob::new(cx, Data::params, |p| &p.noise, false, false);
+                            ParamKnob::new(cx, Data::params, |p| &p.drive, false, false)
+                                .class("drive");
+                            ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
+                        })
+                        .bottom(Pixels(10.0))
+                        .right(Pixels(10.0));
+                    });
+                    HStack::new(cx, |cx| {
+                        VStack::new(cx, |cx| {
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Softclip".to_string(),
+                                0,
+                                3,
+                            );
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Hardclip".to_string(),
+                                1,
+                                3,
+                            );
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Radial".to_string(),
+                                2,
+                                3,
+                            );
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Chomper".to_string(),
+                                3,
+                                3,
+                            );
+                        });
+                        VStack::new(cx, |cx| {
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "RIGHT COLUMN".to_string(),
+                                3,
+                                3,
+                            );
+                        });
                     });
                 })
-                .left(Pixels(1.0))
-                .right(Pixels(1.0))
-                .bottom(Pixels(10.0));
-
-                HStack::new(cx, |cx| {
-                    ParamKnob::new(cx, Data::params, |p| &p.noise, false, false);
-                    ParamKnob::new(cx, Data::params, |p| &p.drive, false, false).class("drive");
-                    ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
-                });
-            });
-			// TODO: Change this to two hstacked vstacks when more algorithms added
-            VStack::new(cx, |cx| {
-                EnumButton::new(
-                    cx,
-                    Data::params,
-                    |p| &p.algorithm,
-                    "Softclip".to_string(),
-                    0,
-                    3,
-                );
-                EnumButton::new(
-                    cx,
-                    Data::params,
-                    |p| &p.algorithm,
-                    "Hardclip".to_string(),
-                    1,
-                    3,
-                );
-                EnumButton::new(
-                    cx,
-                    Data::params,
-                    |p| &p.algorithm,
-                    "Radial".to_string(),
-                    2,
-                    3,
-                );
-                EnumButton::new(
-                    cx,
-                    Data::params,
-                    |p| &p.algorithm,
-                    "Chomper".to_string(),
-                    3,
-                    3,
-                );
+                .class("body");
             });
         })
         .class("main");
