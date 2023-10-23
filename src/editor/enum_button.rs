@@ -32,7 +32,10 @@ impl EnumButton {
         .build(
             cx,
             ParamWidgetBase::build_view(params.clone(), params_to_param, move |cx, _param_data| {
-                Label::new(cx, &option_name).hoverable(false);
+                Label::new(cx, &option_name)
+                    .top(Stretch(1.0))
+                    .bottom(Stretch(1.0))
+                    .hoverable(false);
             }),
         )
         .checked(ParamWidgetBase::make_lens(

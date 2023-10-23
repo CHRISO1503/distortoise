@@ -10,16 +10,7 @@
     font-size: 30;
     bottom: 10px;
     left: 250px;
-}
-
-.param-knob {
-    width: 100%;
-    space: 0px;
-}
-
-.track {
-    background-color: #2b3a67;
-    foreground-color: #2b3a67;
+    top: 10px;
 }
 
 label {
@@ -27,36 +18,16 @@ label {
     color: #2b3a67;
 }
 
-knob {
-    width: 50px;
-    height: 50px;
-    space: 0px;
-}
-
-.drive knob {
-    width: 70px;
-    height: 70px;
-    space: 0px;
-}
-
-knob .track {
-    background-color: #66999b;
-}
-
-.tick {
-    background-color: #b3af8f;
-}
-
 .graph {
     width: 250px;
     height: 250px;
-    left: 28px;
-    right: 28px;
+    space: 1s;
 }
 
 .peak-meter {
     width: 20px;
-    height: 300px;
+    height: 250px;
+    space: 0px;
 }
 
 enum-button:checked {
@@ -65,4 +36,25 @@ enum-button:checked {
 
 enum-button:checked > label {
     color: black;
+}
+
+knob-static {
+    background-color: #b3af8f;
+}
+
+knob-reactive {
+    background-color: #2b3a67;
+}
+
+.knob-graphic {
+    width: 100%;
+    height: 100%;
+}
+
+knob {
+    width: 1s;
+}
+
+.drive .knob-graphic {
+    height: 70px;
 }

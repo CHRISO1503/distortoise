@@ -10,7 +10,7 @@ use std::time::Duration;
 
 mod enum_button;
 mod graph;
-mod param_knob;
+mod knob;
 mod peak_meter;
 
 use crate::data::UIData;
@@ -18,7 +18,7 @@ use crate::TesticularDistortionParams;
 
 use self::enum_button::EnumButton;
 use self::graph::{DistortionGraph, GraphBackground, QuadrantBorders};
-use self::param_knob::ParamKnob;
+use self::knob::Knob;
 use self::peak_meter::{PeakMeter, PeakMeterOutline};
 
 #[derive(Lens)]
@@ -70,8 +70,7 @@ pub(crate) fn create(
                                 )
                                 .class("peak-meter");
                                 PeakMeterOutline::new(cx).class("peak-meter");
-                            })
-                            .left(Pixels(1.0));
+                            });
                             ZStack::new(cx, |cx| {
                                 GraphBackground::new(cx);
                                 DistortionGraph::new(cx, Data::ui_data);
@@ -93,13 +92,11 @@ pub(crate) fn create(
                         .bottom(Pixels(10.0));
 
                         HStack::new(cx, |cx| {
-                            ParamKnob::new(cx, Data::params, |p| &p.noise, false, false);
-                            ParamKnob::new(cx, Data::params, |p| &p.drive, false, false)
-                                .class("drive");
-                            ParamKnob::new(cx, Data::params, |p| &p.gain, false, false);
+                            Knob::new(cx, Data::params, |p| &p.noise, false);
+                            Knob::new(cx, Data::params, |p| &p.drive, false).class("drive");
+                            Knob::new(cx, Data::params, |p| &p.gain, false);
                         })
-                        .bottom(Pixels(10.0))
-                        .right(Pixels(10.0));
+                        .top(Pixels(10.0));
                     });
                     HStack::new(cx, |cx| {
                         VStack::new(cx, |cx| {
