@@ -6,14 +6,19 @@ use nih_plug_vizia::vizia::vg::{Paint, Path, Solidity};
 use nih_plug_vizia::widgets::param_base::ParamWidgetBase;
 use nih_plug_vizia::widgets::util::ModifiersExt;
 
-static DRAG_SCALAR: f32 = 0.042;
+static DRAG_SCALAR: f32 = 0.0042;
 static MODIFIER_SCALAR: f32 = 0.04;
+
+pub struct DragStatus {
+    modified: bool,
+    start_value: f32,
+    start_y: f32,
+}
 
 pub struct Knob {
     param_base: ParamWidgetBase,
-
     is_dragging: bool,
-    prev_drag_y: f32,
+    drag_status: Option<DragStatus>,
 }
 
 impl Knob {
@@ -31,9 +36,8 @@ impl Knob {
     {
         Self {
             param_base: ParamWidgetBase::new(cx, params.clone(), params_to_param),
-
             is_dragging: false,
-            prev_drag_y: 0.0,
+            drag_status: None,
         }
         .build(
             cx,
@@ -58,6 +62,13 @@ impl Knob {
             }),
         )
     }
+    fn reset_drag_status(&mut self, modified: bool, start_y: f32) {
+        self.drag_status = Some(DragStatus {
+            modified,
+            start_value: self.param_base.modulated_normalized_value(),
+            start_y,
+        });
+    }
 }
 
 impl View for Knob {
@@ -69,7 +80,11 @@ impl View for Knob {
             WindowEvent::MouseDown(MouseButton::Left)
             | WindowEvent::MouseTripleClick(MouseButton::Left) => {
                 self.is_dragging = true;
-                self.prev_drag_y = cx.mouse.left.pos_down.1;
+                self.drag_status = Some(DragStatus {
+                    modified: false,
+                    start_value: self.param_base.modulated_normalized_value(),
+                    start_y: cx.mouse.cursory,
+                });
                 cx.capture();
                 cx.focus();
                 cx.set_active(true);
@@ -87,15 +102,27 @@ impl View for Knob {
             }
             WindowEvent::MouseMove(_x, y) => {
                 if self.is_dragging {
-                    let mut delta_normal = (*y - self.prev_drag_y) * DRAG_SCALAR;
-                    self.prev_drag_y = *y;
+                    let delta_normal;
                     if cx.modifiers.shift() {
-                        delta_normal *= MODIFIER_SCALAR;
+                        if self.drag_status.as_ref().unwrap().modified == false {
+                            self.reset_drag_status(true, *y);
+                        }
+                        let prev_drag_status = self.drag_status.get_or_insert_with(|| DragStatus {
+                            modified: false,
+                            start_value: self.param_base.modulated_normalized_value(),
+                            start_y: cx.mouse.cursory,
+                        });
+                        delta_normal =
+                            (*y - prev_drag_status.start_y) * DRAG_SCALAR * MODIFIER_SCALAR;
+                    } else {
+                        if self.drag_status.as_ref().unwrap().modified == true {
+                            self.reset_drag_status(false, *y);
+                        }
+                        delta_normal =
+                            (*y - self.drag_status.as_ref().unwrap().start_y) * DRAG_SCALAR;
                     }
-                    let new_normal = self.param_base.unmodulated_normalized_value() - delta_normal;
-                    self.param_base
-                        .set_normalized_value(cx, new_normal.clamp(0.0, 1.0));
-                    meta.consume();
+                    let new_normal = self.drag_status.as_ref().unwrap().start_value - delta_normal;
+                    self.param_base.set_normalized_value(cx, new_normal);
                 }
             }
             WindowEvent::MouseDoubleClick(button) if *button == MouseButton::Left => {
@@ -106,7 +133,6 @@ impl View for Knob {
                 self.param_base.end_set_parameter(cx);
                 meta.consume();
             }
-
             _ => {}
         });
     }
