@@ -193,13 +193,16 @@ impl View for KnobReactive {
         let end = self.angle_end.to_radians() - PI / 2.0;
         let radius = bounds.h / 2.0;
         let span = self.span.value_or(radius, 0.0);
-        let mut path = Path::new();
+        let mut paint = Paint::color(cx.background_color().cloned().unwrap_or_default().into());
+        paint.set_line_width(span);
+        // Arc
+        let mut arc_path = Path::new();
         if self.center {
             let center = -PI / 2.0;
 
             if self.normalized_value <= 0.5 {
                 let current = self.normalized_value * 2.0 * (center - start) + start;
-                path.arc(
+                arc_path.arc(
                     bounds.center().0,
                     bounds.center().1,
                     radius - span / 2.0,
@@ -209,7 +212,7 @@ impl View for KnobReactive {
                 );
             } else {
                 let current = (self.normalized_value * 2.0 - 1.0) * (end - center) + center;
-                path.arc(
+                arc_path.arc(
                     bounds.center().0,
                     bounds.center().1,
                     radius - span / 2.0,
@@ -220,7 +223,7 @@ impl View for KnobReactive {
             }
         } else {
             let current = self.normalized_value * (end - start) + start;
-            path.arc(
+            arc_path.arc(
                 bounds.center().0,
                 bounds.center().1,
                 radius - span / 2.0,
@@ -229,8 +232,19 @@ impl View for KnobReactive {
                 Solidity::Solid,
             );
         }
-        let mut paint = Paint::color(cx.background_color().cloned().unwrap_or_default().into());
-        paint.set_line_width(span);
-        canvas.stroke_path(&mut path, &paint);
+        canvas.stroke_path(&mut arc_path, &paint);
+
+        // Tick
+        let mut tick_path = Path::new();
+        let angle = start + (end - start) * self.normalized_value;
+        tick_path.move_to(
+            bounds.center().0 + angle.cos() * (radius * 0.5),
+            bounds.center().1 + angle.sin() * (radius * 0.5),
+        );
+        tick_path.line_to(
+            bounds.center().0 + angle.cos() * radius,
+            bounds.center().1 + angle.sin() * radius,
+        );
+        canvas.stroke_path(&mut tick_path, &paint);
     }
 }
