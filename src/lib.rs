@@ -109,8 +109,8 @@ impl Plugin for TesticularDistortion {
                 *sample *= 1.0 + self.rng.gen::<f32>() * MAX_NOISE_VOLUME * noise;
                 *sample *= drive;
                 *sample = algorithm.calculate(*sample);
-                *sample *= gain;
                 amplitude += *sample;
+                *sample *= gain;
             }
 
             // Handle peak meter values

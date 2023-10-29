@@ -1,5 +1,5 @@
 .main {
-    background-color: #ffc482;
+    background-color: #0B0033;
 }
 
 .body {
@@ -15,7 +15,7 @@
 
 label {
     font-size: 15;
-    color: #2b3a67;
+    color: #E3E4DB;
 }
 
 .graph {
@@ -24,26 +24,46 @@ label {
     space: 1s;
 }
 
+distortion-graph {
+    background-color: #E3E4DB;
+}
+
+distortion-graph-background {
+    background-color: #E3E4DB;
+}
+
+distortion-graph-quadrant_borders {
+    background-color: #E3E4DB;
+}
+
 .peak-meter {
     width: 20px;
     height: 250px;
     space: 0px;
 }
 
+peak-meter {
+    background-color: #370031;
+}
+
+peak-meter-outline {
+    background-color: #E3E4DB;
+}
+
 enum-button:checked {
-    background-color: #66999b;
+    background-color: #370031;
 }
 
 enum-button:checked > label {
-    color: black;
+    color: #E3E4DB;
 }
 
 knob-static {
-    background-color: #b3af8f;
+    background-color: #370031;
 }
 
 knob-reactive {
-    background-color: #2b3a67;
+    background-color: #E3E4DB;
 }
 
 .knob-graphic {

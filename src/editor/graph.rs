@@ -5,12 +5,10 @@ use nih_plug_vizia::vizia::prelude::*;
 use nih_plug_vizia::vizia::vg;
 
 use crate::data::UIData;
-
 pub struct DistortionGraph {
     ui_data: Arc<Mutex<UIData>>,
 }
 pub struct GraphBackground {}
-pub struct QuadrantBorders {}
 
 impl DistortionGraph {
     pub fn new<LUIData>(cx: &mut Context, ui_data: LUIData) -> Handle<Self>
@@ -36,6 +34,7 @@ impl View for DistortionGraph {
         let drive = data.get_drive();
         let bounds = cx.bounds();
         let mut path = vg::Path::new();
+        let paint = vg::Paint::color(cx.background_color().cloned().unwrap_or_default().into());
         path.move_to(bounds.x, bounds.y + bounds.h);
         for i in 0..=RESOLUTION {
             let next_point = (
@@ -50,7 +49,7 @@ impl View for DistortionGraph {
             path.line_to(next_point.0, next_point.1);
             path.move_to(next_point.0, next_point.1);
         }
-        canvas.fill_path(&mut path, &vg::Paint::color(vg::Color::rgb(231, 124, 124)));
+        canvas.fill_path(&mut path, &paint);
     }
 }
 
@@ -62,13 +61,13 @@ impl GraphBackground {
 
 impl View for GraphBackground {
     fn element(&self) -> Option<&'static str> {
-        Some("distortion-graph")
+        Some("distortion-graph-background")
     }
 
     fn draw(&self, cx: &mut DrawContext, canvas: &mut Canvas) {
         let bounds = cx.bounds();
         // Draw grid for graph background
-        let paint = vg::Paint::color(vg::Color::rgba(255, 255, 255, 100));
+        let paint = vg::Paint::color(cx.background_color().cloned().unwrap_or_default().into());
         let mut path = vg::Path::new();
         for i in 1..10 {
             let increment = i as f32 * bounds.h / 10.0;
@@ -78,24 +77,8 @@ impl View for GraphBackground {
             path.line_to(bounds.x + increment, bounds.y + bounds.h);
         }
         canvas.stroke_path(&mut path, &paint);
-    }
-}
 
-impl QuadrantBorders {
-    pub fn new(cx: &mut Context) -> Handle<Self> {
-        Self {}.build(cx, |_cx| ())
-    }
-}
-
-impl View for QuadrantBorders {
-    fn element(&self) -> Option<&'static str> {
-        Some("distortion-graph")
-    }
-
-    fn draw(&self, cx: &mut DrawContext, canvas: &mut Canvas) {
-        let bounds = cx.bounds();
-        // Draw graph outline
-        let paint = vg::Paint::color(vg::Color::rgb(255, 255, 255));
+        // Draw quadrant borders
         let mut h_path = vg::Path::new();
         let mut v_path = vg::Path::new();
         h_path.move_to(bounds.x, bounds.y);

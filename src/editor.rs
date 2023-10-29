@@ -17,7 +17,7 @@ use crate::data::UIData;
 use crate::TesticularDistortionParams;
 
 use self::enum_button::EnumButton;
-use self::graph::{DistortionGraph, GraphBackground, QuadrantBorders};
+use self::graph::{DistortionGraph, GraphBackground};
 use self::knob::Knob;
 use self::peak_meter::{PeakMeter, PeakMeterOutline};
 
@@ -74,7 +74,6 @@ pub(crate) fn create(
                             ZStack::new(cx, |cx| {
                                 GraphBackground::new(cx);
                                 DistortionGraph::new(cx, Data::ui_data);
-                                QuadrantBorders::new(cx);
                             })
                             .class("graph");
                             ZStack::new(cx, |cx| {
