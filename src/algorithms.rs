@@ -9,6 +9,9 @@ pub enum DistortionAlgorithm {
     Radial,
     Chomper,
     Sine,
+    Stepper,
+    Humpback,
+    Absolute,
 }
 
 impl DistortionAlgorithm {
@@ -19,6 +22,9 @@ impl DistortionAlgorithm {
             DistortionAlgorithm::Radial => radial(x),
             DistortionAlgorithm::Chomper => chomper(x),
             DistortionAlgorithm::Sine => sine(x),
+            DistortionAlgorithm::Stepper => stepper(x),
+            DistortionAlgorithm::Humpback => humpback(x),
+            DistortionAlgorithm::Absolute => absolute(x),
         }
     }
 }
@@ -63,4 +69,19 @@ pub fn chomper(x: f32) -> f32 {
 #[inline]
 pub fn sine(x: f32) -> f32 {
     (PI / 2.0 * x).sin()
+}
+
+#[inline]
+pub fn stepper(x: f32) -> f32 {
+    hard_clip(0.5 * (x * (x * 2.0 * PI).cos() + x))
+}
+
+#[inline]
+pub fn humpback(x: f32) -> f32 {
+    hard_clip(0.14 * x.powf(5.0) - 1.15 * x.powf(3.0) + 1.9 * x)
+}
+
+#[inline]
+pub fn absolute(x: f32) -> f32 {
+    hard_clip(x.abs())
 }

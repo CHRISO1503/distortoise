@@ -28,7 +28,7 @@ impl View for DistortionGraph {
     }
 
     fn draw(&self, cx: &mut DrawContext, canvas: &mut Canvas) {
-        const RESOLUTION: i32 = 100;
+        const RESOLUTION: i32 = 1000;
         let data = self.ui_data.lock().unwrap();
         let algorithm = data.get_algorithm();
         let drive = data.get_drive();

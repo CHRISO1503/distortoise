@@ -44,7 +44,7 @@ impl Default for TesticularDistortionParams {
                 FloatRange::Skewed {
                     min: util::db_to_gain(MINUS_INFINITY_DB),
                     max: util::db_to_gain(0.0),
-                    factor: FloatRange::gain_skew_factor(MINUS_INFINITY_DB, 0.0),
+                    factor: 1.15,
                 },
             )
             .with_smoother(SmoothingStyle::Logarithmic(50.0))

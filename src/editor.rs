@@ -32,7 +32,7 @@ struct Data {
 impl Model for Data {}
 
 pub(crate) fn default_state() -> Arc<ViziaState> {
-    ViziaState::new(|| (800, 450))
+    ViziaState::new(|| (850, 450))
 }
 
 pub(crate) fn create(
@@ -70,7 +70,8 @@ pub(crate) fn create(
                                 )
                                 .class("peak-meter");
                                 PeakMeterOutline::new(cx).class("peak-meter");
-                            });
+                            })
+                            .class("peak-meter");
                             ZStack::new(cx, |cx| {
                                 GraphBackground::new(cx);
                                 DistortionGraph::new(cx, Data::ui_data);
@@ -86,9 +87,11 @@ pub(crate) fn create(
                                 )
                                 .class("peak-meter");
                                 PeakMeterOutline::new(cx).class("peak-meter");
-                            });
+                            })
+                            .class("peak-meter");
                         })
-                        .bottom(Pixels(10.0));
+                        .bottom(Pixels(10.0))
+                        .space(Stretch(1.0));
 
                         HStack::new(cx, |cx| {
                             Knob::new(cx, Data::params, |p| &p.noise, false);
@@ -106,7 +109,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Softclip".to_string(),
                                 0,
-                                4,
+                                7,
                             );
                             EnumButton::new(
                                 cx,
@@ -114,7 +117,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Hardclip".to_string(),
                                 1,
-                                4,
+                                7,
                             );
                             EnumButton::new(
                                 cx,
@@ -122,7 +125,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Radial".to_string(),
                                 2,
-                                4,
+                                7,
                             );
                             EnumButton::new(
                                 cx,
@@ -130,7 +133,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Chomper".to_string(),
                                 3,
-                                4,
+                                7,
                             );
                         });
                         VStack::new(cx, |cx| {
@@ -140,7 +143,31 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Sine".to_string(),
                                 4,
-                                4,
+                                7,
+                            );
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Stepper".to_string(),
+                                5,
+                                7,
+                            );
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Humpback".to_string(),
+                                6,
+                                7,
+                            );
+                            EnumButton::new(
+                                cx,
+                                Data::params,
+                                |p| &p.algorithm,
+                                "Absolute".to_string(),
+                                7,
+                                7,
                             );
                         });
                     });
