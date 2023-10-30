@@ -100,15 +100,18 @@ impl Plugin for TesticularDistortion {
             let drive = self.params.drive.smoothed.next();
             let noise = self.params.noise.smoothed.next();
             let algorithm = self.params.algorithm.value();
+            let mix = self.params.mix.smoothed.next();
             let mut pre_amplitude = 0.0;
             let mut amplitude = 0.0;
             let num_samples = channel_samples.len();
 
             for sample in channel_samples {
+                let unprocessed_sample = *sample;
                 pre_amplitude += *sample;
                 *sample *= 1.0 + self.rng.gen::<f32>() * MAX_NOISE_VOLUME * noise;
                 *sample *= drive;
                 *sample = algorithm.calculate(*sample);
+                *sample = *sample * mix + unprocessed_sample * (1.0 - mix);
                 amplitude += *sample;
                 *sample *= gain;
             }

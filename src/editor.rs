@@ -93,6 +93,7 @@ pub(crate) fn create(
                         HStack::new(cx, |cx| {
                             Knob::new(cx, Data::params, |p| &p.noise, false);
                             Knob::new(cx, Data::params, |p| &p.drive, false).class("drive");
+                            Knob::new(cx, Data::params, |p| &p.mix, false).class("drive");
                             Knob::new(cx, Data::params, |p| &p.gain, false);
                         })
                         .top(Pixels(10.0));
@@ -105,7 +106,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Softclip".to_string(),
                                 0,
-                                3,
+                                4,
                             );
                             EnumButton::new(
                                 cx,
@@ -113,7 +114,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Hardclip".to_string(),
                                 1,
-                                3,
+                                4,
                             );
                             EnumButton::new(
                                 cx,
@@ -121,7 +122,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Radial".to_string(),
                                 2,
-                                3,
+                                4,
                             );
                             EnumButton::new(
                                 cx,
@@ -129,7 +130,7 @@ pub(crate) fn create(
                                 |p| &p.algorithm,
                                 "Chomper".to_string(),
                                 3,
-                                3,
+                                4,
                             );
                         });
                         VStack::new(cx, |cx| {
@@ -137,9 +138,9 @@ pub(crate) fn create(
                                 cx,
                                 Data::params,
                                 |p| &p.algorithm,
-                                "RIGHT COLUMN".to_string(),
-                                3,
-                                3,
+                                "Sine".to_string(),
+                                4,
+                                4,
                             );
                         });
                     });

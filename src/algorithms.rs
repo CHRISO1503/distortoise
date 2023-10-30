@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use nih_plug::prelude::Enum;
 
 #[derive(PartialEq, Enum, Copy, Clone)]
@@ -6,6 +8,7 @@ pub enum DistortionAlgorithm {
     HardClip,
     Radial,
     Chomper,
+    Sine,
 }
 
 impl DistortionAlgorithm {
@@ -15,6 +18,7 @@ impl DistortionAlgorithm {
             DistortionAlgorithm::HardClip => hard_clip(x),
             DistortionAlgorithm::Radial => radial(x),
             DistortionAlgorithm::Chomper => chomper(x),
+            DistortionAlgorithm::Sine => sine(x),
         }
     }
 }
@@ -54,4 +58,9 @@ pub fn radial(mut x: f32) -> f32 {
 #[inline]
 pub fn chomper(x: f32) -> f32 {
     hard_clip(1.5 * x - 0.7 * x.powf(3.0))
+}
+
+#[inline]
+pub fn sine(x: f32) -> f32 {
+    (PI / 2.0 * x).sin()
 }
