@@ -14,7 +14,7 @@ mod knob;
 mod peak_meter;
 
 use crate::data::UIData;
-use crate::TesticularDistortionParams;
+use crate::DistortoiseParams;
 
 use self::enum_button::EnumButton;
 use self::graph::{DistortionGraph, GraphBackground};
@@ -23,7 +23,7 @@ use self::peak_meter::{PeakMeter, PeakMeterOutline};
 
 #[derive(Lens)]
 struct Data {
-    params: Arc<TesticularDistortionParams>,
+    params: Arc<DistortoiseParams>,
     pre_peak_meter: Arc<AtomicF32>,
     peak_meter: Arc<AtomicF32>,
     ui_data: Arc<Mutex<UIData>>,
@@ -36,7 +36,7 @@ pub(crate) fn default_state() -> Arc<ViziaState> {
 }
 
 pub(crate) fn create(
-    params: Arc<TesticularDistortionParams>,
+    params: Arc<DistortoiseParams>,
     ui_data: Arc<Mutex<UIData>>,
     pre_peak_meter: Arc<AtomicF32>,
     peak_meter: Arc<AtomicF32>,
@@ -56,7 +56,7 @@ pub(crate) fn create(
 
         ZStack::new(cx, |cx| {
             VStack::new(cx, |cx| {
-                Label::new(cx, "Testicular Distortion").class("title");
+                Label::new(cx, "Distortoise").class("title");
                 HStack::new(cx, |cx| {
                     VStack::new(cx, |cx| {
                         HStack::new(cx, |cx| {

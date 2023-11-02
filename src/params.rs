@@ -5,7 +5,7 @@ use std::sync::Arc;
 use crate::{algorithms::DistortionAlgorithm, editor};
 
 #[derive(Params)]
-pub struct TesticularDistortionParams {
+pub struct DistortoiseParams {
     #[persist = "editor-state"]
     pub editor_state: Arc<ViziaState>,
     #[id = "algorithm"]
@@ -20,7 +20,7 @@ pub struct TesticularDistortionParams {
     pub mix: FloatParam,
 }
 
-impl Default for TesticularDistortionParams {
+impl Default for DistortoiseParams {
     fn default() -> Self {
         Self {
             editor_state: editor::default_state(),

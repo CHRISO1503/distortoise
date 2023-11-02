@@ -8,13 +8,13 @@ mod data;
 mod editor;
 mod params;
 
-use params::TesticularDistortionParams;
+use params::DistortoiseParams;
 
 const PEAK_METER_DECAY_MS: f64 = 150.0;
 const MAX_NOISE_VOLUME: f32 = 0.05;
 
-struct TesticularDistortion {
-    params: Arc<TesticularDistortionParams>,
+struct Distortoise {
+    params: Arc<DistortoiseParams>,
     ui_data: Arc<Mutex<UIData>>,
     peak_meter_decay_weight: f32,
     pre_peak_meter: Arc<AtomicF32>,
@@ -22,10 +22,10 @@ struct TesticularDistortion {
     rng: StdRng,
 }
 
-impl Default for TesticularDistortion {
+impl Default for Distortoise {
     fn default() -> Self {
         Self {
-            params: Arc::new(TesticularDistortionParams::default()),
+            params: Arc::new(DistortoiseParams::default()),
             ui_data: Arc::new(Mutex::new(UIData::default())),
             peak_meter_decay_weight: 1.0,
             peak_meter: Arc::new(AtomicF32::new(util::MINUS_INFINITY_DB)),
@@ -35,9 +35,9 @@ impl Default for TesticularDistortion {
     }
 }
 
-impl Plugin for TesticularDistortion {
-    const NAME: &'static str = "Testicular Distortion";
-    const VENDOR: &'static str = "Gayass Plugins";
+impl Plugin for Distortoise {
+    const NAME: &'static str = "Distortoise";
+    const VENDOR: &'static str = "Plugin Sanctuary";
     const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
     const EMAIL: &'static str = "your@email.com";
 
@@ -150,7 +150,7 @@ impl Plugin for TesticularDistortion {
     }
 }
 
-impl TesticularDistortion {
+impl Distortoise {
     fn update_ui_data(&mut self) {
         let ui_data = self.ui_data.lock().unwrap();
         ui_data.set_drive(self.params.drive.smoothed.next());
@@ -158,8 +158,8 @@ impl TesticularDistortion {
     }
 }
 
-impl ClapPlugin for TesticularDistortion {
-    const CLAP_ID: &'static str = "com.your-domain.testicular-distortion";
+impl ClapPlugin for Distortoise {
+    const CLAP_ID: &'static str = "com.your-domain.distortoise";
     const CLAP_DESCRIPTION: Option<&'static str> = Some("Add torsion to dis");
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = None;
@@ -167,12 +167,12 @@ impl ClapPlugin for TesticularDistortion {
     const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Stereo];
 }
 
-impl Vst3Plugin for TesticularDistortion {
-    const VST3_CLASS_ID: [u8; 16] = *b"testicledistort1";
+impl Vst3Plugin for Distortoise {
+    const VST3_CLASS_ID: [u8; 16] = *b"tortoisedistort1";
 
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Fx, Vst3SubCategory::Dynamics];
 }
 
-nih_export_clap!(TesticularDistortion);
-nih_export_vst3!(TesticularDistortion);
+nih_export_clap!(Distortoise);
+nih_export_vst3!(Distortoise);

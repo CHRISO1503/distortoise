@@ -496,6 +496,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "distortoise"
+version = "0.1.0"
+dependencies = [
+ "atomic_float",
+ "nih_plug",
+ "nih_plug_vizia",
+ "paste",
+ "rand 0.8.5",
+]
+
+[[package]]
 name = "dlib"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1927,17 +1938,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6093bad37da69aab9d123a8091e4be0aa4a03e4d601ec641c327398315f62b64"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "testicular_distortion"
-version = "0.1.0"
-dependencies = [
- "atomic_float",
- "nih_plug",
- "nih_plug_vizia",
- "paste",
- "rand 0.8.5",
 ]
 
 [[package]]
