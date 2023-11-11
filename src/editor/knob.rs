@@ -1,7 +1,9 @@
 use std::f32::consts::PI;
+use std::path;
 
 use nih_plug::prelude::Param;
 use nih_plug_vizia::vizia::prelude::*;
+use nih_plug_vizia::vizia::vg::ImageFlags;
 use nih_plug_vizia::vizia::vg::{Paint, Path, Solidity};
 use nih_plug_vizia::widgets::param_base::ParamWidgetBase;
 use nih_plug_vizia::widgets::util::ModifiersExt;
@@ -246,5 +248,17 @@ impl View for KnobReactive {
             bounds.center().1 + angle.sin() * radius,
         );
         canvas.stroke_path(&mut tick_path, &paint);
+
+        // Tortoise
+        let mut image_path = path::PathBuf::new();
+        image_path.push(env!("CARGO_MANIFEST_DIR"));
+        image_path.push(env!("PATH_TO_KNOB_IMAGE"));
+        let image_id = canvas
+            .load_image_file(image_path, ImageFlags::GENERATE_MIPMAPS)
+            .unwrap();
+        let fill_paint = Paint::image(image_id, bounds.x, bounds.y, bounds.h, bounds.h, 0.0, 1.0);
+        let mut path = Path::new();
+        path.rect(bounds.x, bounds.y, bounds.h, bounds.h);
+        canvas.fill_path(&mut path, &fill_paint);
     }
 }

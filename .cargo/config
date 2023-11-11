@@ -1,2 +1,7 @@
+[env]
+PATH_TO_KNOB_IMAGE = { value = "src/editor/assets/turtle_knob.png", relative = true }
+
+
 [alias]
 xtask = "run --package xtask --release --"
+
