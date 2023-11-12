@@ -1,5 +1,5 @@
 .main {
-    background-color: #0B0033;
+    background-color: #22b14c;
 }
 
 .body {
@@ -7,34 +7,34 @@
 }
 
 .title {
-    font-size: 30;
-    bottom: 5px;
-    left: 250px;
+    font-size: 45;
+    left: 1s;
+    right:1s;
     top: 10px;
 }
 
 label {
     font-size: 15;
-    color: #E3E4DB;
+    color: #5c2b11;
 }
 
 .graph {
     width: 250px;
     height: 250px;
-    left: 35px;
-    right: 35px;
+    left: 27px;
+    right: 27px;
 }
 
 distortion-graph {
-    background-color: #E3E4DB;
+    background-color: #5c2b11;
 }
 
 distortion-graph-background {
-    background-color: #E3E4DB;
+    background-color: #5c2b11;
 }
 
 distortion-graph-quadrant_borders {
-    background-color: #E3E4DB;
+    background-color: #5c2b11;
 }
 
 .peak-meter {
@@ -44,27 +44,39 @@ distortion-graph-quadrant_borders {
 }
 
 peak-meter {
-    background-color: #370031;
+    background-color: #5c2b11;
 }
 
 peak-meter-outline {
-    background-color: #E3E4DB;
+    background-color: #5c2b11;
+}
+
+.algorithm-menu {
+    background-color: #ffba49;
+}
+
+enum-button > zstack > label {
+    left: 10px;
 }
 
 enum-button:checked {
-    background-color: #370031;
+    background-color: #5c2b11;
 }
 
-enum-button:checked > label {
-    color: #E3E4DB;
+enum-button:checked > zstack > label {
+    color: #ffba49;
+}
+
+enum-button-border{
+    background-color: #5c2b11;
 }
 
 knob-static {
-    background-color: #370031;
+    background-color: #ffba49;
 }
 
 knob-reactive {
-    background-color: #E3E4DB;
+    background-color: #5c2b11;
 }
 
 .knob-graphic {

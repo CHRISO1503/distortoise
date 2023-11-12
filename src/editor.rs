@@ -21,6 +21,9 @@ use self::graph::{DistortionGraph, GraphBackground};
 use self::knob::Knob;
 use self::peak_meter::{PeakMeter, PeakMeterOutline};
 
+pub const AFRICAN_TTF: &[u8] = include_bytes!("../assets/African-l6d.ttf");
+pub const AFRICAN: &str = "African";
+
 #[derive(Lens)]
 struct Data {
     params: Arc<DistortoiseParams>,
@@ -43,6 +46,7 @@ pub(crate) fn create(
     editor_state: Arc<ViziaState>,
 ) -> Option<Box<dyn Editor>> {
     create_vizia_editor(editor_state, ViziaTheming::Custom, move |cx, _| {
+        cx.add_fonts_mem(&[AFRICAN_TTF]);
         cx.add_theme(include_str!("editor/theme.css"));
         Data {
             params: params.clone(),
@@ -56,7 +60,9 @@ pub(crate) fn create(
 
         ZStack::new(cx, |cx| {
             VStack::new(cx, |cx| {
-                Label::new(cx, "Distortoise").class("title");
+                Label::new(cx, "Distortoise")
+                    .font_family(vec![FamilyOwned::Name(String::from(AFRICAN))])
+                    .class("title");
                 HStack::new(cx, |cx| {
                     VStack::new(cx, |cx| {
                         HStack::new(cx, |cx| {
@@ -170,7 +176,8 @@ pub(crate) fn create(
                                 7,
                             );
                         });
-                    });
+                    })
+                    .class("algorithm-menu");
                 })
                 .class("body");
             });

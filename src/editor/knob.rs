@@ -1,12 +1,12 @@
 use std::f32::consts::PI;
-use std::path;
 
 use nih_plug::prelude::Param;
 use nih_plug_vizia::vizia::prelude::*;
-use nih_plug_vizia::vizia::vg::ImageFlags;
 use nih_plug_vizia::vizia::vg::{Paint, Path, Solidity};
 use nih_plug_vizia::widgets::param_base::ParamWidgetBase;
 use nih_plug_vizia::widgets::util::ModifiersExt;
+
+use crate::editor::AFRICAN;
 
 static DRAG_SCALAR: f32 = 0.0042;
 static MODIFIER_SCALAR: f32 = 0.04;
@@ -56,6 +56,7 @@ impl Knob {
                     })
                     .class("knob-graphic");
                     Label::new(cx, param_data.param().name())
+                        .font_family(vec![FamilyOwned::Name(String::from(AFRICAN))])
                         .space(Stretch(1.0))
                         .top(Stretch(0.0));
                 })
@@ -250,15 +251,40 @@ impl View for KnobReactive {
         canvas.stroke_path(&mut tick_path, &paint);
 
         // Tortoise
-        let mut image_path = path::PathBuf::new();
-        image_path.push(env!("CARGO_MANIFEST_DIR"));
-        image_path.push(env!("PATH_TO_KNOB_IMAGE"));
-        let image_id = canvas
-            .load_image_file(image_path, ImageFlags::GENERATE_MIPMAPS)
-            .unwrap();
-        let fill_paint = Paint::image(image_id, bounds.x, bounds.y, bounds.h, bounds.h, 0.0, 1.0);
-        let mut path = Path::new();
-        path.rect(bounds.x, bounds.y, bounds.h, bounds.h);
-        canvas.fill_path(&mut path, &fill_paint);
+        let tortoise_radius = radius * 0.8;
+        let mut tortoise_path = Path::new();
+        let shell_color = Color::rgb(92, 43, 17);
+        let shell_paint = Paint::color(shell_color.into());
+        let body_color = Color::rgb(34, 177, 76);
+        let body_paint = Paint::color(body_color.into());
+
+        // Feet
+        for i in 0..4 {
+            tortoise_path.circle(
+                bounds.center().0
+                    + (angle + PI / 4.0 + i as f32 * PI / 2.0).cos() * tortoise_radius * 0.9,
+                bounds.center().1
+                    + (angle + PI / 4.0 + i as f32 * PI / 2.0).sin() * tortoise_radius * 0.9,
+                tortoise_radius / 4.0,
+            );
+        }
+        canvas.fill_path(&mut tortoise_path, &body_paint);
+        canvas.stroke_path(&mut tortoise_path, &shell_paint);
+
+        // Shell
+        tortoise_path = Path::new();
+        tortoise_path.circle(bounds.center().0, bounds.center().1, tortoise_radius);
+        canvas.fill_path(&mut tortoise_path, &shell_paint);
+        //canvas.stroke_path(&mut tortoise_path, &Paint::color(Color::black().into()));
+
+        // Head
+        tortoise_path = Path::new();
+        tortoise_path.circle(
+            bounds.center().0 + angle.cos() * (tortoise_radius - tortoise_radius / 4.0),
+            bounds.center().1 + angle.sin() * (tortoise_radius - tortoise_radius / 4.0),
+            tortoise_radius / 4.0,
+        );
+        canvas.fill_path(&mut tortoise_path, &body_paint);
+        //canvas.stroke_path(&mut tortoise_path, &Paint::color(Color::black().into()));
     }
 }

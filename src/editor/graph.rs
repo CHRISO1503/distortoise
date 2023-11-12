@@ -66,6 +66,18 @@ impl View for GraphBackground {
 
     fn draw(&self, cx: &mut DrawContext, canvas: &mut Canvas) {
         let bounds = cx.bounds();
+        // Background color
+        let mut background_path = vg::Path::new();
+        background_path.move_to(bounds.x, bounds.y);
+        background_path.line_to(bounds.x + bounds.w, bounds.y);
+        background_path.line_to(bounds.x + bounds.w, bounds.y + bounds.h);
+        background_path.line_to(bounds.x, bounds.y + bounds.h);
+        background_path.close();
+        canvas.fill_path(
+            &mut background_path,
+            &vg::Paint::color(vg::Color::rgb(255, 186, 73)),
+        );
+
         // Draw grid for graph background
         let paint = vg::Paint::color(cx.background_color().cloned().unwrap_or_default().into());
         let mut path = vg::Path::new();

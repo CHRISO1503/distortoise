@@ -64,6 +64,18 @@ where
         let level_height = bounds.h * level_dbfs / 100.0 + bounds.h;
         let peak_height = bounds.h * peak_dbfs / 100.0 + bounds.h;
         let paint = vg::Paint::color(cx.background_color().cloned().unwrap_or_default().into());
+
+        // Background color
+        {
+            let mut path = vg::Path::new();
+            path.move_to(bounds.x, bounds.y);
+            path.line_to(bounds.x + bounds.w, bounds.y);
+            path.line_to(bounds.x + bounds.w, bounds.y + bounds.h);
+            path.line_to(bounds.x, bounds.y + bounds.h);
+            path.close();
+            canvas.fill_path(&mut path, &vg::Paint::color(vg::Color::rgb(255, 186, 73)));
+        }
+
         // Level bar
         {
             let mut path = vg::Path::new();
@@ -73,14 +85,19 @@ where
             path.line_to(bounds.x, bounds.y + bounds.h - level_height);
             path.line_to(bounds.x, bounds.y + bounds.h);
             path.close();
-            canvas.fill_path(&mut path, &paint);
+            if level_height > 1.0 {
+                canvas.fill_path(&mut path, &paint);
+            }
         }
+
         // Level peak
         {
             let mut path = vg::Path::new();
             path.move_to(bounds.x, bounds.y + bounds.h - peak_height);
             path.line_to(bounds.x + bounds.w, bounds.y + bounds.h - peak_height);
-            canvas.stroke_path(&mut path, &paint);
+            if peak_height > 1.0 {
+                canvas.stroke_path(&mut path, &paint);
+            }
         }
     }
 }
