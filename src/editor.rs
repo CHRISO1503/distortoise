@@ -105,7 +105,7 @@ pub(crate) fn create(
                             Knob::new(cx, Data::params, |p| &p.mix, false).class("drive");
                             Knob::new(cx, Data::params, |p| &p.gain, false);
                         })
-                        .top(Pixels(10.0));
+                        .top(Pixels(20.0));
                     });
                     HStack::new(cx, |cx| {
                         VStack::new(cx, |cx| {
