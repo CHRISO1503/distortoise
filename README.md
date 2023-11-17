@@ -49,7 +49,7 @@ where $y=\textrm{hardclip}(x)$,
 After installing [Rust](https://rustup.rs/), you can compile Distortoise as follows:
 
 ```shell
-cargo xtask bundle testicular_distortion --release
+cargo xtask bundle distortoise --release
 ```
 This will also create a CLAP plugin, but this has never been tested.
 
